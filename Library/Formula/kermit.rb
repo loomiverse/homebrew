@@ -8,7 +8,11 @@ class Kermit <Formula
 
   def install
     system "make macosx103"
-    system "mkdir -p #{man1}"
-    system "make", "prefix=#{prefix}", "manroot=#{}", "install"
+    man1.mkpath
+
+    # The makefile adds /man to the end of manroot when running install
+    # hence we pass share here, not man.  If we don't pass anything it
+    # uses {prefix}/man
+    system "make", "prefix=#{prefix}", "manroot=#{share}", "install"
   end
 end
