@@ -8,7 +8,7 @@ class Lrzsz <Formula
 
   def install
     system "./configure", "--disable-debug", "--disable-dependency-tracking",
-                          "--prefix=#{prefix}", "--mandir=#{man}", 
+                          "--prefix=#{prefix}", "--mandir=#{man}",
 			  "--program-transform-name=s/l//", "--infodir=#{info}"
     system "make"
     system "make -j 1 install"
