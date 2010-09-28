@@ -2,32 +2,23 @@ require 'formula'
 require 'hardware'
 
 class Qt <Formula
-  url 'http://get.qt.nokia.com/qt/source/qt-everywhere-opensource-src-4.6.3.tar.gz'
-  md5 '5c69f16d452b0bb3d44bc3c10556c072'
+  url 'http://get.qt.nokia.com/qt/source/qt-everywhere-opensource-src-4.7.0.tar.gz'
+  version '4.7.0'
+  md5 '3a2f25b9b115037277f4fb759194a7a5'
   homepage 'http://www.qtsoftware.com'
 
   def options
     [
       ['--with-qtdbus', "Enable QtDBus module."],
-      ['--with-qt3support', "Enable deprecated Qt3Support module."],
     ]
   end
 
-  def self.x11?
-    File.exist? "/usr/X11R6/lib"
-  end
-
   depends_on "d-bus" if ARGV.include? '--with-qtdbus'
-  depends_on 'libpng' unless x11?
   depends_on 'sqlite' if MACOS_VERSION <= 10.5
 
   def install
-    args = ["-prefix", prefix,
-            "-system-libpng", "-system-zlib",
-            "-nomake", "demos", "-nomake", "examples",
-            "-release", "-cocoa",
-            "-confirm-license", "-opensource",
-            "-fast"]
+    args = ["-prefix", prefix, "-release", 
+            "-confirm-license", "-opensource"]
 
     # See: http://github.com/mxcl/homebrew/issues/issue/744
     args << "-system-sqlite" if MACOS_VERSION <= 10.5
@@ -41,20 +32,6 @@ class Qt <Formula
       args << "-dbus-linked"
     end
 
-    if ARGV.include? '--with-qt3support'
-      args << "-qt3support"
-    else
-      args << "-no-qt3support"
-    end
-
-    if Qt.x11?
-      args << "-L/usr/X11R6/lib"
-      args << "-I/usr/X11R6/include"
-    else
-      args << "-L#{Formula.factory('libpng').lib}"
-      args << "-I#{Formula.factory('libpng').include}"
-    end
-
     if snow_leopard_64?
       args << '-arch' << 'x86_64'
     else
@@ -62,15 +39,9 @@ class Qt <Formula
     end
 
     system "./configure", *args
+    system "make -j 2"
     system "make install"
 
-    # stop crazy disk usage
-    (prefix+'doc/html').rmtree
-    (prefix+'doc/src').rmtree
-    # what are these anyway?
-    (bin+'Assistant_adp.app').rmtree
-    (bin+'pixeltool.app').rmtree
-    (bin+'qhelpconverter.app').rmtree
     # remove porting file for non-humans
     (prefix+'q3porting.xml').unlink
 
