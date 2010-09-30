@@ -8,14 +8,25 @@ class Wireshark <Formula
   depends_on 'gnutls' => :optional
   depends_on 'pcre' => :optional
   depends_on 'glib'
+  depends_on 'gtk+'
 
   def install
     system "./configure", "--prefix=#{prefix}",
-                          "--disable-dependency-tracking",
-                          "--disable-wireshark" # actually just disables the GTK GUI
+                          "--disable-dependency-tracking"
+                          #"--disable-wireshark" # actually just disables the GTK GUI
     system "make"
+    
     ENV.j1 # Install failed otherwise.
     system "make install"
+
+    #build Wireshark.app
+    inreplace "packaging/macosx/osx-app.sh", "/opt/local", HOMEBREW_PREFIX 
+    system "make osx-app"
+    mkdir "packaging/macosx/Wireshark.app/Contents/Resources/Cellar"
+    cp_r "#{HOMEBREW_PREFIX}/Cellar/gtk+", "packaging/macosx/Wireshark.app/Contents/Resources/Cellar"
+    cp_r "#{HOMEBREW_PREFIX}/Cellar/pango", "packaging/macosx/Wireshark.app/Contents/Resources/Cellar"
+
+    prefix.install "packaging/macosx/Wireshark.app"
   end
 
   def caveats
