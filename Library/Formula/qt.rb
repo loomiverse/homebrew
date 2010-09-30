@@ -39,7 +39,7 @@ class Qt <Formula
     end
 
     system "./configure", *args
-    system "make -j 2"
+    system "make"
     system "make install"
 
     # remove porting file for non-humans

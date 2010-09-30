@@ -8,7 +8,7 @@ class QtCreator <Formula
 
   def install
     system "qmake qtcreator.pro"
-    system "make -j 2"
+    system "make"
     prefix.install "bin/Qt\ Creator.app"
   end
 end
