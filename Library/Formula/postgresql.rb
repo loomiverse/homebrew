@@ -3,8 +3,8 @@ require 'hardware'
 
 class Postgresql <Formula
   homepage 'http://www.postgresql.org/'
-  url 'http://ftp9.us.postgresql.org/pub/mirrors/postgresql/source/v9.0.0/postgresql-9.0.0.tar.bz2'
-  md5 '14c2122cc322e69ab2ab702ed7714bbe'
+  url 'http://ftp9.us.postgresql.org/pub/mirrors/postgresql/source/v9.0.2/postgresql-9.0.2.tar.bz2'
+  md5 'fc79ef32b602f75f2ccd37647bc008e9'
 
   depends_on 'readline'
   depends_on 'libxml2' if MACOS_VERSION < 10.6 # Leopard libxml is too old
@@ -51,7 +51,7 @@ class Postgresql <Formula
     system "make install"
 
     %w[ adminpack dblink fuzzystrmatch lo uuid-ossp pg_buffercache pg_trgm
-        pgcrypto tsearch2 vacuumlo xml2 intarray pg_upgrade pg_upgrade_support ].each do |a|
+        pgcrypto tsearch2 vacuumlo xml2 intarray pg_upgrade pg_upgrade_support hstore ].each do |a|
       system "cd contrib/#{a}; make install"
     end
 
@@ -85,6 +85,10 @@ class Postgresql <Formula
 
   def caveats
     s = <<-EOS
+If builds of PostgreSQL 9 are failing and you have version 8.x installed,
+you may need to remove the previous version first. See:
+  https://github.com/mxcl/homebrew/issues/issue/2510
+
 To build plpython against a specific Python, set PYTHON prior to brewing:
   PYTHON=/usr/local/bin/python  brew install postgresql
 See:
@@ -114,7 +118,7 @@ EOS
       s << <<-EOS
 
 If you want to install the postgres gem, including ARCHFLAGS is recommended:
-    env ARCHFLAGS="-arch x86_64" gem install postgres
+    env ARCHFLAGS="-arch x86_64" gem install pg
 
 To install gems without sudo, see the Homebrew wiki.
       EOS
