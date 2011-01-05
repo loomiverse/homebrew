@@ -13,8 +13,6 @@ class Freeradius <Formula
                           "--prefix=#{prefix}"
 
     system "make"
-    
-    ENV.j1 # Install fails on multi-core otherwise.
-    system "make install"
+    system "make -j1 install"
   end
 end
