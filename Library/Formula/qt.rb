@@ -2,10 +2,16 @@ require 'formula'
 require 'hardware'
 
 class Qt <Formula
-  url 'http://get.qt.nokia.com/qt/source/qt-everywhere-opensource-src-4.7.0.tar.gz'
-  version '4.7.0'
-  md5 '3a2f25b9b115037277f4fb759194a7a5'
+  url 'http://get.qt.nokia.com/qt/source/qt-everywhere-opensource-src-4.7.1.tar.gz'
+  version '4.7.1'
+  md5 '6f88d96507c84e9fea5bf3a71ebeb6d7'
+  sha1 'fcf764d39d982c7f84703821582bd10c3192e341'
   homepage 'http://www.qtsoftware.com'
+
+  def patches
+    # build fails due to sse4.2 error.  patch from http://bugs.gentoo.org/show_bug.cgi?id=344915
+    DATA
+  end
 
   def options
     [
@@ -57,3 +63,25 @@ class Qt <Formula
     "We agreed to the Qt opensource license for you.\nIf this is unacceptable you should uninstall."
   end
 end
+
+__END__
+diff --git a/src/corelib/tools/qsimd_p.h b/src/corelib/tools/qsimd_p.h
+index 664543b..08da700 100644
+--- a/src/corelib/tools/qsimd_p.h
++++ b/src/corelib/tools/qsimd_p.h
+@@ -87,9 +87,13 @@ QT_BEGIN_HEADER
+ #include <tmmintrin.h>
+ #endif
+ 
+-// SSE4.1 and SSE4.2 intrinsics
+-#if (defined(QT_HAVE_SSE4_1) || defined(QT_HAVE_SSE4_2)) && (defined(__SSE4_1__) || defined(Q_CC_MSVC))
++// SSE4.1 intrinsics
++#if defined(QT_HAVE_SSE4_1) && (defined(__SSE4_1__) || defined(Q_CC_MSVC))
+ #include <smmintrin.h>
++#endif
++
++// SSE4.2 intrinsics
++#if defined(QT_HAVE_SSE4_2) && (defined(__SSE4_2__) || defined(Q_CC_MSVC))
+ #include <nmmintrin.h>
+ #endif
+
