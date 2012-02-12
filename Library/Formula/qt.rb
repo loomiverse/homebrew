@@ -118,3 +118,4 @@ class Qt < Formula
     EOS
   end
 end
+

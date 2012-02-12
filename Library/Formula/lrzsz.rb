@@ -6,7 +6,9 @@ class Lrzsz < Formula
   md5 'b5ce6a74abc9b9eb2af94dffdfd372a4'
 
   def install
-    system "./configure", "--prefix=#{prefix}", "--mandir=#{man}"
+    system "./configure", "--disable-debug", "--disable-dependency-tracking",
+                          "--prefix=#{prefix}", "--mandir=#{man}",
+                          "--program-transform-name=s/l//", "--infodir=#{info}"
     system "make"
 
     # there's a bug in lrzsz when using custom --prefix

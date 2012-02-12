@@ -5,6 +5,8 @@ class Minicom < Formula
   homepage 'http://alioth.debian.org/projects/minicom/'
   md5 '700976a3c2dcc8bbd50ab9bb1c08837b'
 
+  depends_on "lrzsz"
+
   def install
     # There is a silly bug in the Makefile where it forgets to link to iconv. Workaround below.
     ENV['LIBS'] = '-liconv'
